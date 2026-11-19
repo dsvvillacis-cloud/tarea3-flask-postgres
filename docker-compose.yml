@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: postgres_db_villacis
+    restart: always
+    environment:
+      POSTGRES_DB: db_villacis
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+    volumes:
+      - v_villacis:/var/lib/postgresql/data
+    networks:
+      - n_villacis
+
+  web:
+    build: .
+    container_name: flask_web_villacis
+    restart: always
+    ports:
+      - "5001:5000"
+    environment:
+      DB_HOST: db
+      POSTGRES_DB: db_villacis
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+      DB_PORT: "5432"
+    depends_on:
+      - db
+    networks:
+      - n_villacis
+
+volumes:
+  v_villacis:
+    name: v_villacis
+
+networks:
+  n_villacis:
+    name: n_villacis
